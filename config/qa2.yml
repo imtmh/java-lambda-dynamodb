@@ -1,0 +1,8 @@
+REGION: ap-south-1
+securityGroupIds:
+  - sg-014c008a5c4400f14
+subnetIds:
+  - subnet-06ea023b6a3db0180
+SQS_END_POINT: https://vpce-0e7012133166a99c9-7qlgl2ii.sqs.ap-south-1.vpce.amazonaws.com
+JWT_SECRET: cl!nt@keyr@nd0m
+JWT_ALGORITHM: HS512

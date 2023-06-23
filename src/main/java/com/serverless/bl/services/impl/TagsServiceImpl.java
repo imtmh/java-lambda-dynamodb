@@ -35,21 +35,25 @@ public class TagsServiceImpl implements TagsService {
 
     private JsonObject mergeTags(TagsResponse tagsResponse) {
         try {
-            JsonParser parser = new JsonParser();
-            JsonObject defaultTags = parser.parse(tagsResponse.getDefaultTags()).getAsJsonObject();
-            JsonObject brandTags = parser.parse(tagsResponse.getBrandTags()).getAsJsonObject();
+            JsonObject defaultTags =
+                    JsonParser.parseString(tagsResponse.getDefaultTags()).getAsJsonObject();
+            JsonObject brandTags =
+                    JsonParser.parseString(tagsResponse.getBrandTags()).getAsJsonObject();
 
-            brandTags.entrySet().forEach(entry -> defaultTags.add(entry.getKey(), entry.getValue()));
+            brandTags.entrySet()
+                    .forEach(entry -> defaultTags.add(entry.getKey(), entry.getValue()));
 
             return defaultTags;
         } catch (JsonSyntaxException e) {
-            LOG.error(":mergeTags: failed to merge common tags with brand tags, using only common. JsonSyntaxException=" + e.getMessage());
+            LOG.error(
+                    ":mergeTags: failed to merge common tags with brand tags, using only common. JsonSyntaxException="
+                            + e.getMessage());
             return getDefaultTags(tagsResponse);
         }
     }
 
     private JsonObject getDefaultTags(TagsResponse tagsResponse) {
-        return new JsonParser().parse(tagsResponse.getDefaultTags()).getAsJsonObject();
+        return JsonParser.parseString(tagsResponse.getDefaultTags()).getAsJsonObject();
     }
 
 }

@@ -28,34 +28,28 @@ public class TagsHandler implements RequestHandler<Map<String, Object>, ApiGatew
     @Override
     public ApiGatewayResponse handleRequest(Map<String, Object> input, Context context) {
         try {
+            LOG.info(":handleRequest: received=" + input);
+
             Request request = INJECTOR.getInstance(InputService.class).getInputParams(input);
 
             JsonObject tags = getTagsService().getTags(request);
 
             LOG.info(":handleRequest: received=" + input + " result=" + tags);
 
-            return ApiGatewayResponse.builder()
-                    .setObjectBody(tags)
-                    .build();
+            return ApiGatewayResponse.builder().setObjectBody(tags).build();
         } catch (InvalidInputException e) {
-            LOG.error(":handleRequest: " + e.getMessage(), e);
-            return ApiGatewayResponse.builder()
-                    .setStatusCode(BAD_REQUEST.getStatus())
-                    .setObjectBody(getErrMsg(e.getMessage()))
-                    .build();
+            LOG.error("Error in handleRequest: " + e.getMessage(), e);
+            return ApiGatewayResponse.builder().setStatusCode(BAD_REQUEST.getStatus())
+                    .setObjectBody(getErrMsg(e.getMessage())).build();
         } catch (DatasourceException e) {
             LOG.error(":handleRequest: " + e.getMessage(), e);
-            return ApiGatewayResponse.builder()
-                    .setStatusCode(SERVER_ERROR.getStatus())
-                    .setObjectBody(getErrMsg(e.getMessage()))
-                    .build();
+            return ApiGatewayResponse.builder().setStatusCode(SERVER_ERROR.getStatus())
+                    .setObjectBody(getErrMsg(e.getMessage())).build();
         } catch (Exception e) {
             String errMsg = "failed to retrieve tags content";
             LOG.error(":handleRequest: " + errMsg, e);
-            return ApiGatewayResponse.builder()
-                    .setStatusCode(SERVER_ERROR.getStatus())
-                    .setObjectBody(getErrMsg(errMsg))
-                    .build();
+            return ApiGatewayResponse.builder().setStatusCode(SERVER_ERROR.getStatus())
+                    .setObjectBody(getErrMsg(errMsg)).build();
         }
     }
 

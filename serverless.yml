@@ -11,17 +11,24 @@
 #
 # Happy Coding!
 
-service: java-dynamo
+service: java-dynamo-delete
+frameworkVersion: "3"
 
 # You can pin your service to only deploy with a specific Serverless version
 # Check out our docs for more details
 # frameworkVersion: "=X.X.X"
 
+custom:
+  currentEnv: ${opt:stage, "dev"}
+  env: ${file(./config/${self:custom.currentEnv}.yml)}
+
 provider:
   name: aws
-  runtime: java8
-  profile: serverless-admin
-  region: eu-central-1
+  runtime: java11
+  stage: ${opt:stage, "dev"}
+  region: ${self:custom.env.REGION}
+  tracing:
+    lambda: true
 
   environment:
     APP_LOG_LEVEL: ERROR
@@ -30,7 +37,7 @@ provider:
     APP_AWS_REGION: MY_REGION
 
 package:
-  artifact: target/java-dynamo-1.29.03.jar
+  artifact: target/java.dynamodb-1.29.03.jar
 
 functions:
   getTags:
@@ -40,4 +47,3 @@ functions:
           path: java-dynamo/tags/{brand_id}/{language}
           method: get
           cors: true
-

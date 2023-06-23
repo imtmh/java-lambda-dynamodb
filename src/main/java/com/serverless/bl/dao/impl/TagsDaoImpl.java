@@ -1,5 +1,6 @@
 package com.serverless.bl.dao.impl;
 
+import org.apache.log4j.Logger;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Item;
 import com.amazonaws.services.dynamodbv2.document.Table;
@@ -12,19 +13,26 @@ import com.serverless.utils.exceptions.DatasourceException;
 
 public class TagsDaoImpl implements TagsDao {
 
+
+    private static final Logger log = Logger.getLogger(TagsDaoImpl.class);
+
+
     private static final String TABLE_NAME = "tags";
     private static final String PRIMARY_KEY = "language";
     private static final String TAGS_KEY = "common_tags";
 
     @Override
     public TagsResponse getTags(Request request) {
+
+
         try {
             DynamoDB dynamoDB = new DynamoDB(DynamoFactory.getDynamoInstance());
             Table table = dynamoDB.getTable(TABLE_NAME);
+
+            log.info("got dynamo table: " + table);
             String brandKey = "brand_" + request.getBrandId();
-            GetItemSpec spec = new GetItemSpec().
-                    withPrimaryKey(PRIMARY_KEY, request.getLanguage()).
-                    withAttributesToGet(brandKey, TAGS_KEY);
+            GetItemSpec spec = new GetItemSpec().withPrimaryKey(PRIMARY_KEY, request.getLanguage())
+                    .withAttributesToGet(brandKey, TAGS_KEY);
             Item outcome = table.getItem(spec);
 
             String brands = outcome.getJSONPretty(brandKey);

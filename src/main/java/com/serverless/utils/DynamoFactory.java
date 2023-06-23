@@ -12,20 +12,17 @@ public class DynamoFactory {
     private static final String SECRET_KEY = System.getenv("DYNAMO_SECRET_KEY");
     private static final String REGION = System.getenv("APP_AWS_REGION");
 
-    private static AmazonDynamoDB DYNAMO_INSTANCE = null;
+    private static AmazonDynamoDB dynamoInstance = null;
 
-    private DynamoFactory() {
-    }
+    private DynamoFactory() {}
 
     public static AmazonDynamoDB getDynamoInstance() {
-        if (DYNAMO_INSTANCE == null) {
-            AmazonDynamoDBClientBuilder amazonDynamoDBClientBuilder = AmazonDynamoDBClientBuilder.
-                    standard().
-                    withCredentials(getAwsCredentials()).
-                    withRegion(REGION);
-            DYNAMO_INSTANCE = amazonDynamoDBClientBuilder.build();
+        if (dynamoInstance == null) {
+            AmazonDynamoDBClientBuilder amazonDynamoDBClientBuilder = AmazonDynamoDBClientBuilder
+                    .standard().withCredentials(getAwsCredentials()).withRegion(REGION);
+            dynamoInstance = amazonDynamoDBClientBuilder.build();
         }
-        return DYNAMO_INSTANCE;
+        return dynamoInstance;
     }
 
     private static AWSCredentialsProvider getAwsCredentials() {
